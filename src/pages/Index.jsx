@@ -9,6 +9,7 @@ const IndexContent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const { session } = useSupabaseAuth();
   const { data: notes, isLoading: notesLoading } = useNotes();
 
@@ -18,6 +19,7 @@ const IndexContent = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
+    setCurrentPage(1); // Reset to first page on new search
   };
 
   const toggleFilter = (filter) => {
@@ -26,10 +28,16 @@ const IndexContent = () => {
         ? prevFilters.filter(f => f !== filter)
         : [...prevFilters, filter]
     );
+    setCurrentPage(1); // Reset to first page on filter change
   };
 
   const clearFilters = () => {
     setActiveFilters([]);
+    setCurrentPage(1); // Reset to first page on clearing filters
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   if (notesLoading) {
@@ -49,7 +57,12 @@ const IndexContent = () => {
           onSearch={handleSearch}
           title={activeFilters.length > 0 ? "Filtered Notes" : "All Notes"}
         />
-        <NotesGrid searchQuery={searchQuery} activeFilters={activeFilters} />
+        <NotesGrid 
+          searchQuery={searchQuery} 
+          activeFilters={activeFilters}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
         <CreateNoteModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
