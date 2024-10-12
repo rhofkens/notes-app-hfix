@@ -2,29 +2,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 
 const fromSupabase = async (query) => {
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return data;
+    try {
+        const { data, error } = await query;
+        if (error) throw new Error(error.message);
+        return data;
+    } catch (error) {
+        console.error('Supabase query error:', error);
+        throw new Error(`Failed to fetch data: ${error.message}`);
+    }
 };
-
-/*
-### notes
-
-| name       | type                     | format | required |
-|------------|--------------------------|--------|----------|
-| id         | integer                  | bigint | true     |
-| created_at | timestamp with time zone | string | true     |
-| title      | text                     | string | false    |
-| content    | text                     | string | false    |
-| color      | text                     | string | false    |
-| tag        | text                     | string | false    |
-
-Note: 
-- 'id' is the Primary Key.
-- 'created_at' has a default value of now().
-- 'color' has a default value of 'pink'.
-- 'tag' has a default value of 'Work'.
-*/
 
 export const useNote = (id) => useQuery({
     queryKey: ['notes', id],
