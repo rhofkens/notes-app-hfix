@@ -59,10 +59,12 @@ const NoteCard = ({ id, title, content, color, tag, created_at }) => {
         </span>
       </div>
       <p className="mb-6 whitespace-pre-wrap">{content}</p>
-      <div className="flex justify-between items-center text-sm">
-        <span>{formattedTime}</span>
-        <span>{formattedDate}</span>
-        <div className="flex space-x-2">
+      <div className="flex flex-col space-y-2">
+        <div className="flex justify-between text-sm">
+          <span>{formattedTime}</span>
+          <span>{formattedDate}</span>
+        </div>
+        <div className="flex justify-end space-x-2">
           <Button variant="ghost" size="icon" onClick={handleEdit}>
             <Pencil className="h-4 w-4" />
           </Button>
