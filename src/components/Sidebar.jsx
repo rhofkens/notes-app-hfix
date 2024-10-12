@@ -121,7 +121,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
         </div>
       </nav>
       {activeFilters.length > 0 && !isCollapsed && (
-        <div className="p-4 flex-shrink-0">
+        <div className="p-4 mt-auto">
           <Button
             variant="ghost"
             className="w-full flex items-center justify-center text-sm"
