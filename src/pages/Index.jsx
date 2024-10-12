@@ -8,14 +8,12 @@ import { useSupabaseAuth, useAddNote, useNotes } from '../integrations/supabase'
 const IndexContent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   const { session } = useSupabaseAuth();
   const addNote = useAddNote();
-  const { data: existingNotes, refetch } = useNotes();
+  const { data: existingNotes } = useNotes();
 
   useEffect(() => {
     const initializeNotes = async () => {
-      setIsLoading(true);
       if (existingNotes && existingNotes.length === 0) {
         const newNotes = [
           { title: "Meeting Prep", content: "Prepare agenda for team meeting. Review last week's minutes.", tag: "Work", color: "pink" },
@@ -28,13 +26,11 @@ const IndexContent = () => {
         for (const note of newNotes) {
           await addNote.mutateAsync(note);
         }
-        await refetch(); // Refetch notes after adding new ones
       }
-      setIsLoading(false);
     };
 
     initializeNotes();
-  }, []);  // Remove dependencies to ensure this only runs once on mount
+  }, [existingNotes, addNote]);
 
   const handleAddNote = () => {
     setIsCreateModalOpen(true);
@@ -43,10 +39,6 @@ const IndexContent = () => {
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
-
-  if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
 
   return (
     <div className="flex bg-gray-800 min-h-screen">
