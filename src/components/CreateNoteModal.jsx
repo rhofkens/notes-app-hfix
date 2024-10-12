@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 const tagColorMap = {
   'Videos': 'purple',
-  'Wishlist': 'yellow',
+  'Wishlist': 'amber',
   'Assignment': 'blue',
   'Projects': 'teal',
   'Work': 'pink',
@@ -92,7 +92,6 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
             <span>Selected Color:</span>
             <div
               className={`w-6 h-6 rounded-full ${color ? `bg-${color}-500` : 'bg-gray-500'}`}
-              style={{ backgroundColor: color ? `var(--${color}-500)` : 'gray' }}
             ></div>
           </div>
           <DialogFooter>
