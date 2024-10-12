@@ -10,6 +10,13 @@ const colorOptions = [
   { name: 'Teal', value: 'bg-teal-500' },
   { name: 'Pink', value: 'bg-pink-500' },
   { name: 'Orange', value: 'bg-orange-500' },
+  // New colors
+  { name: 'Red', value: 'bg-red-500' },
+  { name: 'Green', value: 'bg-green-500' },
+  { name: 'Indigo', value: 'bg-indigo-500' },
+  { name: 'Cyan', value: 'bg-cyan-500' },
+  { name: 'Lime', value: 'bg-lime-500' },
+  { name: 'Fuchsia', value: 'bg-fuchsia-500' },
 ];
 
 const AddTagModal = ({ isOpen, onClose, onAddTag }) => {
@@ -38,7 +45,7 @@ const AddTagModal = ({ isOpen, onClose, onAddTag }) => {
             onChange={(e) => setTagName(e.target.value)}
             className="bg-gray-800 text-white border-gray-700"
           />
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {colorOptions.map((color) => (
               <button
                 key={color.value}
