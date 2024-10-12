@@ -106,7 +106,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
             onClick={() => toggleFilter(category.name)}
           >
             {activeFilters.includes(category.name) ? (
-              <Check className={`w-5 h-5 ${category.color} rounded-full mr-3`} />
+              <Check className={`w-2.5 h-2.5 ${category.color} rounded-full mr-3`} />
             ) : (
               <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
             )}
