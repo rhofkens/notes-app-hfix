@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CircleUserRound, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSupabaseAuth } from '../integrations/supabase';
 import { useNavigate } from 'react-router-dom';
+import { useNotes } from '../integrations/supabase';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,12 +21,12 @@ import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 
 const categories = [
-  { name: 'Videos', count: '07', color: 'bg-purple-500' },
-  { name: 'Wishlist', count: '11', color: 'bg-yellow-500' },
-  { name: 'Assignment', count: '02', color: 'bg-blue-600' },
-  { name: 'Projects', count: '05', color: 'bg-teal-500' },
-  { name: 'Work', count: '01', color: 'bg-pink-500' },
-  { name: 'Study', count: '12', color: 'bg-orange-500' },
+  { name: 'Videos', color: 'bg-purple-500' },
+  { name: 'Wishlist', color: 'bg-yellow-500' },
+  { name: 'Assignment', color: 'bg-blue-600' },
+  { name: 'Projects', color: 'bg-teal-500' },
+  { name: 'Work', color: 'bg-pink-500' },
+  { name: 'Study', color: 'bg-orange-500' },
 ];
 
 const Sidebar = () => {
@@ -34,6 +35,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
+  const { data: notes, isLoading } = useNotes();
 
   useEffect(() => {
     const handleResize = () => {
@@ -63,6 +65,11 @@ const Sidebar = () => {
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     return format(new Date(dateString), 'dd MMMM yyyy HH:mm:ss');
+  };
+
+  const getCategoryCount = (categoryName) => {
+    if (isLoading || !notes) return 0;
+    return notes.filter(note => note.tag === categoryName).length;
   };
 
   return (
@@ -99,7 +106,7 @@ const Sidebar = () => {
               <>
                 <span className="flex-grow">{category.name}</span>
                 <span className={`${category.color} text-xs px-2 py-1 rounded-full`}>
-                  {category.count}
+                  {getCategoryCount(category.name).toString().padStart(2, '0')}
                 </span>
               </>
             )}
