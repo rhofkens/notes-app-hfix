@@ -3,7 +3,7 @@ import NoteCard from './NoteCard';
 import { useNotes } from '../integrations/supabase';
 import { parseISO, compareDesc } from 'date-fns';
 
-const NotesGrid = () => {
+const NotesGrid = ({ searchQuery }) => {
   const { data: notes, isLoading, error } = useNotes();
 
   if (isLoading) return <div>Loading notes...</div>;
@@ -14,9 +14,16 @@ const NotesGrid = () => {
     compareDesc(parseISO(a.created_at), parseISO(b.created_at))
   ) || [];
 
+  // Filter notes based on search query
+  const filteredNotes = sortedNotes.filter(note =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.tag.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {sortedNotes.map((note) => (
+      {filteredNotes.map((note) => (
         <NoteCard key={note.id} {...note} />
       ))}
     </div>
