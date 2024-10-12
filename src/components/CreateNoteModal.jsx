@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAddNote } from '../integrations/supabase';
 import { toast } from 'sonner';
 
-const CreateNoteModal = ({ isOpen, onClose, categories }) => {
+const CreateNoteModal = ({ isOpen, onClose, categories = [] }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tag, setTag] = useState('');
