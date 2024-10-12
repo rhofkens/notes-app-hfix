@@ -105,7 +105,7 @@ const Sidebar = () => {
             {!isCollapsed && (
               <>
                 <span className="flex-grow">{category.name}</span>
-                <span className={`${category.color} text-xs px-2 py-1 rounded-full`}>
+                <span className={`${category.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
                   {getCategoryCount(category.name).toString()}
                 </span>
               </>
