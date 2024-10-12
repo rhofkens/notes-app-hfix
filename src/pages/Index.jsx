@@ -40,6 +40,13 @@ const IndexContent = () => {
     setCurrentPage(newPage);
   };
 
+  const handleTagClick = (tag) => {
+    if (!activeFilters.includes(tag)) {
+      setActiveFilters([...activeFilters, tag]);
+    }
+    setCurrentPage(1); // Reset to first page when adding a new filter
+  };
+
   if (notesLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -62,6 +69,7 @@ const IndexContent = () => {
           activeFilters={activeFilters}
           currentPage={currentPage}
           onPageChange={handlePageChange}
+          onTagClick={handleTagClick}
         />
         <CreateNoteModal
           isOpen={isCreateModalOpen}
