@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CircleUserRound, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { CircleUserRound, ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
 import { useSupabaseAuth } from '../integrations/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useNotes } from '../integrations/supabase';
@@ -29,7 +29,7 @@ const categories = [
   { name: 'Study', color: 'bg-orange-500' },
 ];
 
-const Sidebar = ({ activeFilters, toggleFilter }) => {
+const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
@@ -98,7 +98,7 @@ const Sidebar = ({ activeFilters, toggleFilter }) => {
           {isCollapsed ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
         </button>
       </div>
-      <nav>
+      <nav className="flex-grow">
         {categories.map((category) => (
           <div
             key={category.name}
@@ -121,6 +121,17 @@ const Sidebar = ({ activeFilters, toggleFilter }) => {
           </div>
         ))}
       </nav>
+
+      {activeFilters.length > 0 && !isCollapsed && (
+        <Button
+          variant="ghost"
+          className="mt-4 w-full flex items-center justify-center text-sm"
+          onClick={clearFilters}
+        >
+          <X className="mr-2 h-4 w-4" />
+          Clear All Filters
+        </Button>
+      )}
 
       <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
         <DialogContent>

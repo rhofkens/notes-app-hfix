@@ -28,13 +28,21 @@ const IndexContent = () => {
     );
   };
 
+  const clearFilters = () => {
+    setActiveFilters([]);
+  };
+
   if (notesLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
     <div className="flex bg-gray-800 min-h-screen">
-      <Sidebar activeFilters={activeFilters} toggleFilter={toggleFilter} />
+      <Sidebar
+        activeFilters={activeFilters}
+        toggleFilter={toggleFilter}
+        clearFilters={clearFilters}
+      />
       <div className="flex-1 flex flex-col">
         <Header 
           onAddNote={handleAddNote} 
