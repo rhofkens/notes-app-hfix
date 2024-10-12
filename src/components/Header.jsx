@@ -2,7 +2,7 @@ import React from 'react';
 import { Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
-const Header = () => {
+const Header = ({ onAddNote }) => {
   return (
     <div className="flex justify-between items-center p-6 bg-gray-800 text-white">
       <h1 className="text-2xl font-semibold hidden sm:block">All Notes</h1>
@@ -15,7 +15,7 @@ const Header = () => {
             className="bg-gray-700 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <Button className="bg-teal-500 hover:bg-teal-600 text-white">
+        <Button className="bg-teal-500 hover:bg-teal-600 text-white" onClick={onAddNote}>
           Add New Note
         </Button>
       </div>
