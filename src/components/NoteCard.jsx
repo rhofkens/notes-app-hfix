@@ -9,15 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
 
-const defaultColors = [
-  'purple', 'yellow', 'blue', 'teal', 'pink', 'orange',
-  'red', 'green', 'indigo', 'cyan', 'lime', 'fuchsia'
-];
-
-const getColorForTag = (tag) => {
-  // Generate a consistent index based on the tag name
-  const index = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % defaultColors.length;
-  return defaultColors[index];
+const tagColorMap = {
+  'Videos': 'purple',
+  'Wishlist': 'yellow',
+  'Assignment': 'blue',
+  'Projects': 'teal',
+  'Work': 'pink',
+  'Study': 'orange',
+  'Experiments': 'green', // Added new tag color
 };
 
 const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) => {
@@ -74,14 +73,12 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
 
   useEffect(() => {
     if (editedTag) {
-      setEditedColor(getColorForTag(editedTag));
+      setEditedColor(tagColorMap[editedTag] || color);
     }
-  }, [editedTag]);
-
-  const noteColor = getColorForTag(tag);
+  }, [editedTag, color]);
 
   return (
-    <div className={`bg-${noteColor}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
+    <div className={`bg-${tagColorMap[tag] || color}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
         <span 
@@ -132,9 +129,9 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
                 <SelectValue placeholder="Select tag" />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 text-white">
-                {defaultColors.map((_, index) => (
-                  <SelectItem key={index} value={`Tag${index + 1}`} className="text-white hover:bg-gray-700">
-                    Tag{index + 1}
+                {Object.keys(tagColorMap).map((t) => (
+                  <SelectItem key={t} value={t} className="text-white hover:bg-gray-700">
+                    {t}
                   </SelectItem>
                 ))}
               </SelectContent>
