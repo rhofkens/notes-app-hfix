@@ -12,6 +12,14 @@ const IndexContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { session } = useSupabaseAuth();
   const { data: notes, isLoading: notesLoading } = useNotes();
+  const [categories, setCategories] = useState([
+    { name: 'Videos', color: 'bg-purple-500' },
+    { name: 'Wishlist', color: 'bg-yellow-500' },
+    { name: 'Assignment', color: 'bg-blue-600' },
+    { name: 'Projects', color: 'bg-teal-500' },
+    { name: 'Work', color: 'bg-pink-500' },
+    { name: 'Study', color: 'bg-orange-500' },
+  ]);
 
   const handleAddNote = () => {
     setIsCreateModalOpen(true);
@@ -19,7 +27,7 @@ const IndexContent = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   const toggleFilter = (filter) => {
@@ -28,12 +36,12 @@ const IndexContent = () => {
         ? prevFilters.filter(f => f !== filter)
         : [...prevFilters, filter]
     );
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1);
   };
 
   const clearFilters = () => {
     setActiveFilters([]);
-    setCurrentPage(1); // Reset to first page on clearing filters
+    setCurrentPage(1);
   };
 
   const handlePageChange = (newPage) => {
@@ -42,6 +50,10 @@ const IndexContent = () => {
 
   const handleTagClick = (tag) => {
     toggleFilter(tag);
+  };
+
+  const addNewCategory = (newCategory) => {
+    setCategories([...categories, newCategory]);
   };
 
   if (notesLoading) {
@@ -54,6 +66,8 @@ const IndexContent = () => {
         activeFilters={activeFilters}
         toggleFilter={toggleFilter}
         clearFilters={clearFilters}
+        categories={categories}
+        addNewCategory={addNewCategory}
       />
       <div className="flex-1 flex flex-col">
         <Header 
@@ -71,6 +85,7 @@ const IndexContent = () => {
         <CreateNoteModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
+          categories={categories}
         />
       </div>
     </div>

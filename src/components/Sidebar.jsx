@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CircleUserRound, ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
+import { CircleUserRound, ChevronLeft, ChevronRight, Check, X, Plus } from 'lucide-react';
 import { useSupabaseAuth } from '../integrations/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useNotes } from '../integrations/supabase';
@@ -19,22 +19,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
+import AddTagModal from './AddTagModal';
 
-const categories = [
-  { name: 'Videos', color: 'bg-purple-500' },
-  { name: 'Wishlist', color: 'bg-yellow-500' },
-  { name: 'Assignment', color: 'bg-blue-600' },
-  { name: 'Projects', color: 'bg-teal-500' },
-  { name: 'Work', color: 'bg-pink-500' },
-  { name: 'Study', color: 'bg-orange-500' },
-];
-
-const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
+const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNewCategory }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
+  const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
   const { data: notes, isLoading } = useNotes();
 
   useEffect(() => {
@@ -46,13 +39,8 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
       }
     };
 
-    // Set initial state
     handleResize();
-
-    // Add event listener
     window.addEventListener('resize', handleResize);
-
-    // Clean up
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -70,6 +58,11 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   const getCategoryCount = (categoryName) => {
     if (isLoading || !notes) return 0;
     return notes.filter(note => note.tag === categoryName).length;
+  };
+
+  const handleAddNewTag = (newTag) => {
+    addNewCategory(newTag);
+    setIsAddTagModalOpen(false);
   };
 
   return (
@@ -120,6 +113,16 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
             )}
           </div>
         ))}
+        {!isCollapsed && (
+          <Button
+            variant="ghost"
+            className="w-full mt-2 flex items-center justify-center text-sm"
+            onClick={() => setIsAddTagModalOpen(true)}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add New Tag
+          </Button>
+        )}
       </nav>
 
       {activeFilters.length > 0 && !isCollapsed && (
@@ -170,6 +173,12 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AddTagModal
+        isOpen={isAddTagModalOpen}
+        onClose={() => setIsAddTagModalOpen(false)}
+        onAddTag={handleAddNewTag}
+      />
     </div>
   );
 };

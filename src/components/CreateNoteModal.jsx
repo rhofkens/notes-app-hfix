@@ -7,16 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAddNote } from '../integrations/supabase';
 import { toast } from 'sonner';
 
-const tagColorMap = {
-  'Videos': 'purple',
-  'Wishlist': 'yellow',
-  'Assignment': 'blue',
-  'Projects': 'teal',
-  'Work': 'pink',
-  'Study': 'orange',
-};
-
-const CreateNoteModal = ({ isOpen, onClose }) => {
+const CreateNoteModal = ({ isOpen, onClose, categories }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tag, setTag] = useState('');
@@ -26,9 +17,12 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (tag) {
-      setColor(tagColorMap[tag]);
+      const selectedCategory = categories.find(category => category.name === tag);
+      if (selectedCategory) {
+        setColor(selectedCategory.color);
+      }
     }
-  }, [tag]);
+  }, [tag, categories]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -81,9 +75,9 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
               <SelectValue placeholder="Select tag" />
             </SelectTrigger>
             <SelectContent className="bg-gray-800 text-white">
-              {Object.keys(tagColorMap).map((t) => (
-                <SelectItem key={t} value={t} className="text-white hover:bg-gray-700">
-                  {t}
+              {categories.map((category) => (
+                <SelectItem key={category.name} value={category.name} className="text-white hover:bg-gray-700">
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -91,7 +85,7 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
           <div className="flex items-center space-x-2">
             <span>Selected Color:</span>
             <div
-              className={`w-6 h-6 rounded-full ${color ? `bg-${color}-500` : 'bg-gray-500'}`}
+              className={`w-6 h-6 rounded-full ${color}`}
             ></div>
           </div>
           <DialogFooter>
