@@ -73,64 +73,69 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   };
 
   return (
-    <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
-      <div className="flex items-center mb-8 justify-between">
-        {!isCollapsed && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center focus:outline-none">
-                <CircleUserRound className="h-10 w-10 text-gray-400" />
-                <span className="ml-3 text-sm font-semibold truncate">
-                  {session?.user?.email || 'User'}
-                </span>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuItem onClick={() => setIsProfileDialogOpen(true)}>Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setIsLogoutDialogOpen(true)}>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 rounded-full hover:bg-gray-800 transition-colors"
-        >
-          {isCollapsed ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
-        </button>
-      </div>
-      <nav className="flex-grow">
-        {categories.map((category) => (
-          <div
-            key={category.name}
-            className="flex items-center mb-4 cursor-pointer"
-            onClick={() => toggleFilter(category.name)}
+    <div className={`bg-gray-900 text-white flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
+      <div className="p-6 flex-shrink-0">
+        <div className="flex items-center mb-8 justify-between">
+          {!isCollapsed && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center focus:outline-none">
+                  <CircleUserRound className="h-10 w-10 text-gray-400" />
+                  <span className="ml-3 text-sm font-semibold truncate">
+                    {session?.user?.email || 'User'}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem onClick={() => setIsProfileDialogOpen(true)}>Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsLogoutDialogOpen(true)}>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-2 rounded-full hover:bg-gray-800 transition-colors"
           >
-            {activeFilters.includes(category.name) ? (
-              <Check className={`w-3 h-3 ${category.color} rounded-full mr-3`} />
-            ) : (
-              <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
-            )}
-            {!isCollapsed && (
-              <>
-                <span className="flex-grow">{category.name}</span>
-                <span className={`${category.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
-                  {getCategoryCount(category.name).toString()}
-                </span>
-              </>
-            )}
-          </div>
-        ))}
+            {isCollapsed ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
+          </button>
+        </div>
+      </div>
+      <nav className="flex-grow overflow-y-auto">
+        <div className="px-6 space-y-4">
+          {categories.map((category) => (
+            <div
+              key={category.name}
+              className="flex items-center cursor-pointer"
+              onClick={() => toggleFilter(category.name)}
+            >
+              {activeFilters.includes(category.name) ? (
+                <Check className={`w-3 h-3 ${category.color} rounded-full mr-3`} />
+              ) : (
+                <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
+              )}
+              {!isCollapsed && (
+                <>
+                  <span className="flex-grow">{category.name}</span>
+                  <span className={`${category.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
+                    {getCategoryCount(category.name).toString()}
+                  </span>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       </nav>
-
       {activeFilters.length > 0 && !isCollapsed && (
-        <Button
-          variant="ghost"
-          className="mt-4 w-full flex items-center justify-center text-sm"
-          onClick={clearFilters}
-        >
-          <X className="mr-2 h-4 w-4" />
-          Clear All Filters
-        </Button>
+        <div className="p-6 flex-shrink-0">
+          <Button
+            variant="ghost"
+            className="w-full flex items-center justify-center text-sm"
+            onClick={clearFilters}
+          >
+            <X className="mr-2 h-4 w-4" />
+            Clear All Filters
+          </Button>
+        </div>
       )}
 
       <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
