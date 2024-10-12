@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 const Header = () => {
   return (
     <div className="flex justify-between items-center p-6 bg-gray-800 text-white">
-      <h1 className="text-2xl font-semibold">All Notes</h1>
+      <h1 className="text-2xl font-semibold hidden sm:block">All Notes</h1>
       <div className="flex items-center space-x-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
