@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CircleUserRound, ChevronLeft, ChevronRight, Check, X, Plus } from 'lucide-react';
-import { useSupabaseAuth } from '../integrations/supabase';
+import { useSupabaseAuth, useNotes } from '../integrations/supabase';
 import { useNavigate } from 'react-router-dom';
-import { useNotes } from '../integrations/supabase';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +27,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNew
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
-  const { data: notes, isLoading } = useNotes();
+  const { data: notes, isLoading: notesLoading } = useNotes();
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,7 +55,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNew
   };
 
   const getCategoryCount = (categoryName) => {
-    if (isLoading || !notes) return 0;
+    if (notesLoading || !notes) return 0;
     return notes.filter(note => note.tag === categoryName).length;
   };
 
@@ -66,7 +65,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNew
   };
 
   return (
-    <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
+    <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ease-in-out ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
       <div className="flex items-center mb-8 justify-between">
         {!isCollapsed && (
           <DropdownMenu>
