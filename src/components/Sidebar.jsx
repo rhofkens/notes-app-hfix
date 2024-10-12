@@ -102,7 +102,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
         {categories.map((category) => (
           <div
             key={category.name}
-            className="flex items-center mb-4 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition-colors"
+            className="flex items-center mb-3 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition-colors"
             onClick={() => toggleFilter(category.name)}
           >
             {activeFilters.includes(category.name) ? (
