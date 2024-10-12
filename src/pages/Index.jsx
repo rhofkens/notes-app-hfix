@@ -1,15 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import NotesGrid from '../components/NotesGrid';
 import CreateNoteModal from '../components/CreateNoteModal';
-import { useSupabaseAuth, useNotes } from '../integrations/supabase';
+import { useSupabaseAuth, useAddNote, useNotes } from '../integrations/supabase';
 
 const IndexContent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const { session } = useSupabaseAuth();
-  const { data: notes, isLoading: notesLoading } = useNotes();
+  const addNote = useAddNote();
+  const { data: notes, isLoading: notesLoading, refetch } = useNotes();
+
+  useEffect(() => {
+    const initializeNotes = async () => {
+      if (!notesLoading && notes && notes.length === 0) {
+        const newNotes = [
+          { title: "Meeting Prep", content: "Prepare agenda for team meeting. Review last week's minutes.", tag: "Work", color: "pink" },
+          { title: "Grocery List", content: "Milk, eggs, bread, and vegetables for the week.", tag: "Wishlist", color: "yellow" },
+          { title: "Workout Plan", content: "Monday: Cardio, Wednesday: Strength, Friday: Yoga", tag: "Projects", color: "teal" },
+          { title: "Book Summary", content: "Chapter 1-3 summary for literature class assignment.", tag: "Study", color: "orange" },
+          { title: "Coding Tutorial", content: "Watch React hooks tutorial. Practice with small project.", tag: "Videos", color: "purple" }
+        ];
+
+        for (const note of newNotes) {
+          await addNote.mutateAsync(note);
+        }
+        await refetch();
+      }
+      setIsLoading(false);
+    };
+
+    initializeNotes();
+  }, [notes, notesLoading, addNote, refetch]);
 
   const handleAddNote = () => {
     setIsCreateModalOpen(true);
@@ -19,7 +43,7 @@ const IndexContent = () => {
     setSearchQuery(query);
   };
 
-  if (notesLoading) {
+  if (isLoading || notesLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
