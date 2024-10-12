@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import NotesGrid from '../components/NotesGrid';
 import CreateNoteModal from '../components/CreateNoteModal';
-import { useSupabaseAuth, useNotes, useTags } from '../integrations/supabase';
+import { useSupabaseAuth, useNotes } from '../integrations/supabase';
 
 const IndexContent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -12,7 +12,14 @@ const IndexContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { session } = useSupabaseAuth();
   const { data: notes, isLoading: notesLoading } = useNotes();
-  const { data: tags, isLoading: tagsLoading } = useTags();
+  const [categories, setCategories] = useState([
+    { name: 'Videos', color: 'bg-purple-500' },
+    { name: 'Wishlist', color: 'bg-yellow-500' },
+    { name: 'Assignment', color: 'bg-blue-600' },
+    { name: 'Projects', color: 'bg-teal-500' },
+    { name: 'Work', color: 'bg-pink-500' },
+    { name: 'Study', color: 'bg-orange-500' },
+  ]);
 
   const handleAddNote = () => {
     setIsCreateModalOpen(true);
@@ -45,7 +52,11 @@ const IndexContent = () => {
     toggleFilter(tag);
   };
 
-  if (notesLoading || tagsLoading) {
+  const addNewCategory = (newCategory) => {
+    setCategories([...categories, newCategory]);
+  };
+
+  if (notesLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
@@ -55,7 +66,8 @@ const IndexContent = () => {
         activeFilters={activeFilters}
         toggleFilter={toggleFilter}
         clearFilters={clearFilters}
-        categories={tags}
+        categories={categories}
+        addNewCategory={addNewCategory}
       />
       <div className="flex-1 flex flex-col">
         <Header 
@@ -73,7 +85,7 @@ const IndexContent = () => {
         <CreateNoteModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          categories={tags}
+          categories={categories}
         />
       </div>
     </div>
