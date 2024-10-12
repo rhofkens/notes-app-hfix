@@ -16,6 +16,7 @@ const tagColorMap = {
   'Projects': 'teal',
   'Work': 'pink',
   'Study': 'orange',
+  'Experiments': 'green', // Added new tag color
 };
 
 const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) => {
@@ -72,12 +73,12 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
 
   useEffect(() => {
     if (editedTag) {
-      setEditedColor(tagColorMap[editedTag]);
+      setEditedColor(tagColorMap[editedTag] || color);
     }
-  }, [editedTag]);
+  }, [editedTag, color]);
 
   return (
-    <div className={`bg-${color}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
+    <div className={`bg-${tagColorMap[tag] || color}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
         <span 
@@ -138,7 +139,7 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
             <div className="flex items-center space-x-2">
               <span>Selected Color:</span>
               <div
-                className={`w-6 h-6 rounded-full ${editedColor ? `bg-${editedColor}-500` : 'bg-gray-500'}`}
+                className={`w-6 h-6 rounded-full bg-${editedColor}-500`}
               ></div>
             </div>
             <DialogFooter>
