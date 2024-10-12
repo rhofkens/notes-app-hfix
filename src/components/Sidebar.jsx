@@ -8,6 +8,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const categories = [
   { name: 'Videos', count: '07', color: 'bg-purple-500' },
@@ -22,6 +31,7 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,6 +53,7 @@ const Sidebar = () => {
   }, []);
 
   const handleLogout = async () => {
+    setIsLogoutDialogOpen(false);
     await logout();
     navigate('/login', { state: { from: 'logout' } });
   };
@@ -62,7 +73,7 @@ const Sidebar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsLogoutDialogOpen(true)}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -88,6 +99,25 @@ const Sidebar = () => {
           </div>
         ))}
       </nav>
+
+      <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Logout</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to log out? You will need to log in again to access your account.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleLogout}>
+              Logout
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
