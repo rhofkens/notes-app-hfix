@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, isValid } from 'date-fns';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from 'sonner';
 
 const tagColorMap = {
   'Videos': 'purple',
@@ -41,20 +42,39 @@ const NoteCard = ({ id, title, content, color, tag, created_at }) => {
   };
 
   const confirmDelete = () => {
-    deleteNote.mutate(id);
-    setIsDeleteModalOpen(false);
+    deleteNote.mutate(id, {
+      onSuccess: () => {
+        toast.success('Note deleted successfully');
+        setIsDeleteModalOpen(false);
+      },
+      onError: (error) => {
+        toast.error(`Error deleting note: ${error.message}`);
+      }
+    });
   };
 
   const handleSubmitEdit = (e) => {
     e.preventDefault();
-    updateNote.mutate({ id, title: editedTitle, content: editedContent, color: editedColor, tag: editedTag });
-    setIsEditModalOpen(false);
+    if (!editedTitle || !editedContent || !editedTag) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    updateNote.mutate({ id, title: editedTitle, content: editedContent, color: editedColor, tag: editedTag }, {
+      onSuccess: () => {
+        toast.success('Note updated successfully');
+        setIsEditModalOpen(false);
+      },
+      onError: (error) => {
+        toast.error(`Error updating note: ${error.message}`);
+      }
+    });
   };
 
-  const handleTagChange = (newTag) => {
-    setEditedTag(newTag);
-    setEditedColor(tagColorMap[newTag]);
-  };
+  useEffect(() => {
+    if (editedTag) {
+      setEditedColor(tagColorMap[editedTag]);
+    }
+  }, [editedTag]);
 
   return (
     <div className={`bg-${color}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
@@ -81,7 +101,7 @@ const NoteCard = ({ id, title, content, color, tag, created_at }) => {
       </div>
 
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-50">
+        <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
           <DialogHeader>
             <DialogTitle>Edit Note</DialogTitle>
           </DialogHeader>
@@ -91,46 +111,50 @@ const NoteCard = ({ id, title, content, color, tag, created_at }) => {
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
               required
+              className="bg-gray-800 text-white border-gray-700"
             />
             <Textarea
               placeholder="Content"
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               required
+              className="bg-gray-800 text-white border-gray-700"
             />
-            <Select value={editedTag} onValueChange={handleTagChange}>
-              <SelectTrigger>
+            <Select value={editedTag} onValueChange={setEditedTag} required>
+              <SelectTrigger className="bg-gray-800 text-white border-gray-700">
                 <SelectValue placeholder="Select tag" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-gray-800 text-white">
                 {Object.keys(tagColorMap).map((t) => (
-                  <SelectItem key={t} value={t}>
+                  <SelectItem key={t} value={t} className="text-white hover:bg-gray-700">
                     {t}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Input
-              placeholder="Color"
-              value={editedColor}
-              readOnly
-              className={`bg-${editedColor}-500 text-white`}
-            />
+            <div className="flex items-center space-x-2">
+              <span>Selected Color:</span>
+              <div
+                className={`w-6 h-6 rounded-full ${editedColor ? `bg-${editedColor}-500` : 'bg-gray-500'}`}
+              ></div>
+            </div>
             <DialogFooter>
-              <Button type="submit">Update Note</Button>
+              <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
+                Update Note
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-50">
+        <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
           <DialogHeader>
             <DialogTitle>Confirm Deletion</DialogTitle>
           </DialogHeader>
           <p>Are you sure you want to delete this note?</p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} className="bg-gray-700 text-white hover:bg-gray-600">Cancel</Button>
             <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
           </DialogFooter>
         </DialogContent>
