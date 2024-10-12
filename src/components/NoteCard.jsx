@@ -1,10 +1,10 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 
 const NoteCard = ({ title, content, color, tag, created_at }) => {
   const createdDate = new Date(created_at);
-  const formattedTime = format(createdDate, 'hh:mm a');
-  const formattedDate = format(createdDate, 'dd MMMM yyyy');
+  const formattedTime = isValid(createdDate) ? format(createdDate, 'hh:mm a') : 'Invalid date';
+  const formattedDate = isValid(createdDate) ? format(createdDate, 'dd MMMM yyyy') : 'Invalid date';
 
   return (
     <div className={`bg-${color}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
