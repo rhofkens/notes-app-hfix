@@ -4,7 +4,7 @@ import { useNotes } from '../integrations/supabase';
 import { parseISO, compareDesc } from 'date-fns';
 import { Button } from "@/components/ui/button";
 
-const NotesGrid = ({ searchQuery, activeFilters, currentPage, onPageChange }) => {
+const NotesGrid = ({ searchQuery, activeFilters, currentPage, onPageChange, onTagClick }) => {
   const { data: notes, isLoading, error } = useNotes();
   const notesPerPage = 12;
 
@@ -37,7 +37,7 @@ const NotesGrid = ({ searchQuery, activeFilters, currentPage, onPageChange }) =>
     <div className="flex flex-col">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         {paginatedNotes.map((note) => (
-          <NoteCard key={note.id} {...note} />
+          <NoteCard key={note.id} {...note} onTagClick={onTagClick} />
         ))}
       </div>
       <div className="flex justify-center mt-6 space-x-2">
