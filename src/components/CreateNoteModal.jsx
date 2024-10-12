@@ -91,7 +91,7 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
           <div className="flex items-center space-x-2">
             <span>Selected Color:</span>
             <div
-              className={`w-6 h-6 rounded-full ${color ? `bg-${color}-500` : 'bg-gray-500'}`}
+              className={`w-6 h-6 rounded-full`}
               style={{ backgroundColor: color ? `var(--${color}-500)` : 'gray' }}
             ></div>
           </div>
