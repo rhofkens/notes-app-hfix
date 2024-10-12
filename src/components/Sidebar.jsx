@@ -33,7 +33,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+    <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
       <div className="flex items-center mb-8 justify-between">
         {!isCollapsed && (
           <>
