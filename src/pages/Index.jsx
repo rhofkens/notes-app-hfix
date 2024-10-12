@@ -11,12 +11,11 @@ const IndexContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { session } = useSupabaseAuth();
   const addNote = useAddNote();
-  const { data: existingNotes, refetch } = useNotes();
+  const { data: notes, isLoading: notesLoading, refetch } = useNotes();
 
   useEffect(() => {
     const initializeNotes = async () => {
-      setIsLoading(true);
-      if (existingNotes && existingNotes.length === 0) {
+      if (!notesLoading && notes && notes.length === 0) {
         const newNotes = [
           { title: "Meeting Prep", content: "Prepare agenda for team meeting. Review last week's minutes.", tag: "Work", color: "pink" },
           { title: "Grocery List", content: "Milk, eggs, bread, and vegetables for the week.", tag: "Wishlist", color: "yellow" },
@@ -28,13 +27,13 @@ const IndexContent = () => {
         for (const note of newNotes) {
           await addNote.mutateAsync(note);
         }
-        await refetch(); // Refetch notes after adding new ones
+        await refetch();
       }
       setIsLoading(false);
     };
 
     initializeNotes();
-  }, []);  // Remove dependencies to ensure this only runs once on mount
+  }, [notes, notesLoading, addNote, refetch]);
 
   const handleAddNote = () => {
     setIsCreateModalOpen(true);
@@ -44,7 +43,7 @@ const IndexContent = () => {
     setSearchQuery(query);
   };
 
-  if (isLoading) {
+  if (isLoading || notesLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
