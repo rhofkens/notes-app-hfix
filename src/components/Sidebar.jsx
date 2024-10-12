@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CircleUserRound, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSupabaseAuth } from '../integrations/supabase';
 
 const categories = [
   { name: 'Videos', count: '07', color: 'bg-purple-500' },
@@ -12,6 +13,7 @@ const categories = [
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { session } = useSupabaseAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,7 +40,9 @@ const Sidebar = () => {
         {!isCollapsed && (
           <>
             <CircleUserRound className="h-10 w-10 text-gray-400" />
-            <span className="ml-3 text-lg font-semibold">Steve Dean</span>
+            <span className="ml-3 text-sm font-semibold truncate">
+              {session?.user?.email || 'User'}
+            </span>
           </>
         )}
         <button
