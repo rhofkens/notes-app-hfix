@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CircleUserRound, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSupabaseAuth } from '../integrations/supabase';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,7 @@ const categories = [
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,6 +44,7 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     await logout();
+    navigate('/login', { state: { from: 'logout' } });
   };
 
   return (
