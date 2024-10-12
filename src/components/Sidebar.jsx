@@ -46,13 +46,8 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
       }
     };
 
-    // Set initial state
     handleResize();
-
-    // Add event listener
     window.addEventListener('resize', handleResize);
-
-    // Clean up
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -74,14 +69,14 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
 
   return (
     <div className={`bg-gray-900 text-white flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
-      <div className="p-6 flex-shrink-0">
-        <div className="flex items-center mb-8 justify-between">
+      <div className="p-4 flex-shrink-0">
+        <div className="flex items-center justify-between mb-4">
           {!isCollapsed && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center focus:outline-none">
-                  <CircleUserRound className="h-10 w-10 text-gray-400" />
-                  <span className="ml-3 text-sm font-semibold truncate">
+                  <CircleUserRound className="h-8 w-8 text-gray-400" />
+                  <span className="ml-2 text-sm font-semibold truncate">
                     {session?.user?.email || 'User'}
                   </span>
                 </button>
@@ -94,28 +89,28 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+            className="p-1 rounded-full hover:bg-gray-800 transition-colors"
           >
-            {isCollapsed ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
+            {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
           </button>
         </div>
       </div>
-      <nav className="flex-grow overflow-y-auto">
-        <div className="px-6 space-y-4">
+      <nav className="flex-grow overflow-y-auto px-4">
+        <div className="space-y-2">
           {categories.map((category) => (
             <div
               key={category.name}
-              className="flex items-center cursor-pointer"
+              className="flex items-center cursor-pointer py-2"
               onClick={() => toggleFilter(category.name)}
             >
               {activeFilters.includes(category.name) ? (
-                <Check className={`w-3 h-3 ${category.color} rounded-full mr-3`} />
+                <Check className={`w-3 h-3 ${category.color} rounded-full mr-2`} />
               ) : (
-                <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
+                <div className={`w-2 h-2 rounded-full ${category.color} mr-2`}></div>
               )}
               {!isCollapsed && (
                 <>
-                  <span className="flex-grow">{category.name}</span>
+                  <span className="flex-grow text-sm">{category.name}</span>
                   <span className={`${category.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
                     {getCategoryCount(category.name).toString()}
                   </span>
@@ -126,7 +121,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
         </div>
       </nav>
       {activeFilters.length > 0 && !isCollapsed && (
-        <div className="p-6 flex-shrink-0">
+        <div className="p-4 flex-shrink-0">
           <Button
             variant="ghost"
             className="w-full flex items-center justify-center text-sm"
