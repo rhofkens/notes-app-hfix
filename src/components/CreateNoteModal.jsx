@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,30 +6,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddNote } from '../integrations/supabase';
 
-const colors = [
-  { name: 'Purple', value: 'purple' },
-  { name: 'Amber', value: 'amber' },
-  { name: 'Blue', value: 'blue' },
-  { name: 'Teal', value: 'teal' },
-  { name: 'Pink', value: 'pink' },
-];
-
-const tags = [
-  'Videos',
-  'Wishlist',
-  'Assignment',
-  'Projects',
-  'Work',
-  'Study',
-];
+const tagColorMap = {
+  'Videos': 'purple',
+  'Wishlist': 'amber',
+  'Assignment': 'blue',
+  'Projects': 'teal',
+  'Work': 'pink',
+  'Study': 'amber',
+};
 
 const CreateNoteModal = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [color, setColor] = useState('purple');
+  const [color, setColor] = useState('');
   const [tag, setTag] = useState('');
 
   const addNote = useAddNote();
+
+  useEffect(() => {
+    if (tag) {
+      setColor(tagColorMap[tag]);
+    }
+  }, [tag]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,7 +36,7 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
         onClose();
         setTitle('');
         setContent('');
-        setColor('purple');
+        setColor('');
         setTag('');
       }
     });
@@ -63,30 +61,24 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
             onChange={(e) => setContent(e.target.value)}
             required
           />
-          <Select value={color} onValueChange={setColor}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select color" />
-            </SelectTrigger>
-            <SelectContent>
-              {colors.map((c) => (
-                <SelectItem key={c.value} value={c.value}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           <Select value={tag} onValueChange={setTag}>
             <SelectTrigger>
               <SelectValue placeholder="Select tag" />
             </SelectTrigger>
             <SelectContent>
-              {tags.map((t) => (
+              {Object.keys(tagColorMap).map((t) => (
                 <SelectItem key={t} value={t}>
                   {t}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <Input
+            placeholder="Color"
+            value={color}
+            readOnly
+            className="bg-gray-100"
+          />
           <DialogFooter>
             <Button type="submit">Create Note</Button>
           </DialogFooter>
