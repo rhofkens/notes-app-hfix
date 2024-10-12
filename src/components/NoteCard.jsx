@@ -16,7 +16,8 @@ const tagColorMap = {
   'Projects': 'teal',
   'Work': 'pink',
   'Study': 'orange',
-  'Experiments': 'green', // Added new tag color
+  'Experiments': 'green',
+  'Money': 'emerald', // Added new tag color for Money
 };
 
 const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) => {
