@@ -10,11 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const tagColorMap = {
   'Videos': 'purple',
-  'Wishlist': 'amber',
+  'Wishlist': 'yellow',
   'Assignment': 'blue',
   'Projects': 'teal',
   'Work': 'pink',
-  'Study': 'amber',
+  'Study': 'orange',
 };
 
 const NoteCard = ({ id, title, content, color, tag, created_at }) => {
