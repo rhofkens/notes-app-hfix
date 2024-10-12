@@ -106,7 +106,7 @@ const Sidebar = () => {
               <>
                 <span className="flex-grow">{category.name}</span>
                 <span className={`${category.color} text-xs px-2 py-1 rounded-full`}>
-                  {getCategoryCount(category.name).toString().padStart(2, '0')}
+                  {getCategoryCount(category.name).toString()}
                 </span>
               </>
             )}
