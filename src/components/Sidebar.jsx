@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { format } from 'date-fns';
 
 const categories = [
   { name: 'Videos', count: '07', color: 'bg-purple-500' },
@@ -32,6 +33,7 @@ const Sidebar = () => {
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -58,6 +60,11 @@ const Sidebar = () => {
     navigate('/login', { state: { from: 'logout' } });
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return format(new Date(dateString), 'dd MMMM yyyy HH:mm:ss');
+  };
+
   return (
     <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
       <div className="flex items-center mb-8 justify-between">
@@ -72,7 +79,7 @@ const Sidebar = () => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsProfileDialogOpen(true)}>Profile</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsLogoutDialogOpen(true)}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -115,6 +122,25 @@ const Sidebar = () => {
             <Button variant="destructive" onClick={handleLogout}>
               Logout
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>User Profile</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <strong>Email:</strong> {session?.user?.email || 'N/A'}
+            </div>
+            <div>
+              <strong>Last Login:</strong> {formatDate(session?.user?.last_sign_in_at)}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsProfileDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
