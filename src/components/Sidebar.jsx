@@ -21,11 +21,11 @@ import { format } from 'date-fns';
 
 const categories = [
   { name: 'Videos', count: '07', color: 'bg-purple-500' },
-  { name: 'Wishlist', count: '11', color: 'bg-amber-600' },
+  { name: 'Wishlist', count: '11', color: 'bg-yellow-500' },
   { name: 'Assignment', count: '02', color: 'bg-blue-600' },
   { name: 'Projects', count: '05', color: 'bg-teal-500' },
   { name: 'Work', count: '01', color: 'bg-pink-500' },
-  { name: 'Study', count: '12', color: 'bg-amber-600' },
+  { name: 'Study', count: '12', color: 'bg-orange-500' },
 ];
 
 const Sidebar = () => {
