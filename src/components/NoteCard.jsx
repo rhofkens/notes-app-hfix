@@ -14,7 +14,7 @@ const NoteCard = ({ title, content, color, tag, created_at }) => {
           {tag}
         </span>
       </div>
-      <p className="mb-6">{content}</p>
+      <p className="mb-6 whitespace-pre-wrap">{content}</p>
       <div className="flex justify-between text-sm">
         <span>{formattedTime}</span>
         <span>{formattedDate}</span>
