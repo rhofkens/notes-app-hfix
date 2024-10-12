@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CircleUserRound, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CircleUserRound, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useSupabaseAuth } from '../integrations/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useNotes } from '../integrations/supabase';
@@ -29,7 +29,7 @@ const categories = [
   { name: 'Study', color: 'bg-orange-500' },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ activeFilters, toggleFilter }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
@@ -100,8 +100,16 @@ const Sidebar = () => {
       </div>
       <nav>
         {categories.map((category) => (
-          <div key={category.name} className="flex items-center mb-4">
-            <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
+          <div
+            key={category.name}
+            className="flex items-center mb-4 cursor-pointer"
+            onClick={() => toggleFilter(category.name)}
+          >
+            {activeFilters.includes(category.name) ? (
+              <Check className={`w-5 h-5 ${category.color} rounded-full mr-3`} />
+            ) : (
+              <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
+            )}
             {!isCollapsed && (
               <>
                 <span className="flex-grow">{category.name}</span>

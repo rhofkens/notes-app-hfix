@@ -8,6 +8,7 @@ import { useSupabaseAuth, useNotes } from '../integrations/supabase';
 const IndexContent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState([]);
   const { session } = useSupabaseAuth();
   const { data: notes, isLoading: notesLoading } = useNotes();
 
@@ -19,16 +20,28 @@ const IndexContent = () => {
     setSearchQuery(query);
   };
 
+  const toggleFilter = (filter) => {
+    setActiveFilters(prevFilters =>
+      prevFilters.includes(filter)
+        ? prevFilters.filter(f => f !== filter)
+        : [...prevFilters, filter]
+    );
+  };
+
   if (notesLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
     <div className="flex bg-gray-800 min-h-screen">
-      <Sidebar />
+      <Sidebar activeFilters={activeFilters} toggleFilter={toggleFilter} />
       <div className="flex-1 flex flex-col">
-        <Header onAddNote={handleAddNote} onSearch={handleSearch} />
-        <NotesGrid searchQuery={searchQuery} />
+        <Header 
+          onAddNote={handleAddNote} 
+          onSearch={handleSearch}
+          title={activeFilters.length > 0 ? "Filtered Notes" : "All Notes"}
+        />
+        <NotesGrid searchQuery={searchQuery} activeFilters={activeFilters} />
         <CreateNoteModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
