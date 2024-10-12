@@ -41,10 +41,7 @@ const IndexContent = () => {
   };
 
   const handleTagClick = (tag) => {
-    if (!activeFilters.includes(tag)) {
-      setActiveFilters([...activeFilters, tag]);
-    }
-    setCurrentPage(1); // Reset to first page when adding a new filter
+    toggleFilter(tag);
   };
 
   if (notesLoading) {
