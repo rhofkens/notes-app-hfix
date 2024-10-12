@@ -9,11 +9,11 @@ import { toast } from 'sonner';
 
 const tagColorMap = {
   'Videos': 'purple',
-  'Wishlist': 'amber',
+  'Wishlist': 'yellow',
   'Assignment': 'blue',
   'Projects': 'teal',
   'Work': 'pink',
-  'Study': 'amber',
+  'Study': 'orange',
 };
 
 const CreateNoteModal = ({ isOpen, onClose }) => {
