@@ -77,7 +77,7 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
             placeholder="Color"
             value={color}
             readOnly
-            className="bg-gray-100"
+            className={`bg-${color}-500 text-white`}
           />
           <DialogFooter>
             <Button type="submit">Create Note</Button>
