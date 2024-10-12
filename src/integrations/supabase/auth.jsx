@@ -3,6 +3,7 @@ import { supabase } from './supabase.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { Alert } from "@/components/ui/alert";
 
 const SupabaseAuthContext = createContext();
 
@@ -58,11 +59,31 @@ export const useSupabaseAuth = () => {
   return useContext(SupabaseAuthContext);
 };
 
-export const SupabaseAuthUI = () => (
-  <Auth
-    supabaseClient={supabase}
-    appearance={{ theme: ThemeSupa }}
-    theme="default"
-    providers={[]}
-  />
-);
+export const SupabaseAuthUI = () => {
+  const [error, setError] = useState(null);
+
+  const handleAuthError = (error) => {
+    if (error.message.includes('email_address_not_authorized')) {
+      setError('This email address is not authorized. Please use an authorized email or contact support.');
+    } else {
+      setError('An error occurred during authentication. Please try again.');
+    }
+  };
+
+  return (
+    <div>
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          {error}
+        </Alert>
+      )}
+      <Auth
+        supabaseClient={supabase}
+        appearance={{ theme: ThemeSupa }}
+        theme="default"
+        providers={[]}
+        onError={handleAuthError}
+      />
+    </div>
+  );
+};
