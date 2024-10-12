@@ -19,6 +19,7 @@ const tagColorMap = {
 
 const NoteCard = ({ id, title, content, color, tag, created_at }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const [editedContent, setEditedContent] = useState(content);
   const [editedTag, setEditedTag] = useState(tag);
@@ -36,7 +37,12 @@ const NoteCard = ({ id, title, content, color, tag, created_at }) => {
   };
 
   const handleDelete = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
     deleteNote.mutate(id);
+    setIsDeleteModalOpen(false);
   };
 
   const handleSubmitEdit = (e) => {
@@ -114,6 +120,19 @@ const NoteCard = ({ id, title, content, color, tag, created_at }) => {
               <Button type="submit">Update Note</Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-50">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to delete this note?</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
