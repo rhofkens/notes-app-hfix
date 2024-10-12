@@ -14,6 +14,15 @@ const colors = [
   { name: 'Pink', value: 'pink' },
 ];
 
+const tags = [
+  'Videos',
+  'Wishlist',
+  'Assignment',
+  'Projects',
+  'Work',
+  'Study',
+];
+
 const CreateNoteModal = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -37,7 +46,7 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-50">
         <DialogHeader>
           <DialogTitle>Create New Note</DialogTitle>
         </DialogHeader>
@@ -66,11 +75,18 @@ const CreateNoteModal = ({ isOpen, onClose }) => {
               ))}
             </SelectContent>
           </Select>
-          <Input
-            placeholder="Tag"
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-          />
+          <Select value={tag} onValueChange={setTag}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select tag" />
+            </SelectTrigger>
+            <SelectContent>
+              {tags.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <DialogFooter>
             <Button type="submit">Create Note</Button>
           </DialogFooter>
