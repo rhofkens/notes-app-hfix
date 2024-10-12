@@ -5,7 +5,7 @@ import NotesGrid from '../components/NotesGrid';
 import CreateNoteModal from '../components/CreateNoteModal';
 import { useSupabaseAuth } from '../integrations/supabase';
 
-const Index = () => {
+const IndexContent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { session } = useSupabaseAuth();
 
@@ -26,6 +26,10 @@ const Index = () => {
       </div>
     </div>
   );
+};
+
+const Index = () => {
+  return <IndexContent />;
 };
 
 export default Index;
