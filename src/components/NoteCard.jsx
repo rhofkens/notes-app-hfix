@@ -9,15 +9,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
 
-const tagColorMap = {
-  'Videos': 'purple',
-  'Wishlist': 'yellow',
-  'Assignment': 'blue',
-  'Projects': 'teal',
-  'Work': 'pink',
-  'Study': 'orange',
-  'Experiments': 'green',
-  'Money': 'emerald', // Added new tag color for Money
+const mapColorToTailwind = (color) => {
+  const colorMap = {
+    'blue': 'bg-blue-600',
+    'red': 'bg-red-500',
+    'green': 'bg-green-500',
+    'yellow': 'bg-yellow-500',
+    'purple': 'bg-purple-500',
+    'pink': 'bg-pink-500',
+    'indigo': 'bg-indigo-500',
+    'teal': 'bg-teal-500',
+    'orange': 'bg-orange-500',
+    'gray': 'bg-gray-500',
+    'emerald': 'bg-emerald-500',
+    'cyan': 'bg-cyan-500',
+    'lime': 'bg-lime-500',
+    'fuchsia': 'bg-fuchsia-500',
+  };
+  return colorMap[color.toLowerCase()] || 'bg-gray-500'; // Default to gray if color not found
 };
 
 const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) => {
@@ -74,12 +83,12 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
 
   useEffect(() => {
     if (editedTag) {
-      setEditedColor(tagColorMap[editedTag] || color);
+      setEditedColor(color);
     }
   }, [editedTag, color]);
 
   return (
-    <div className={`bg-${tagColorMap[tag] || color}-500 rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
+    <div className={`${mapColorToTailwind(color)} rounded-lg p-6 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
         <span 
@@ -130,7 +139,7 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
                 <SelectValue placeholder="Select tag" />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 text-white">
-                {Object.keys(tagColorMap).map((t) => (
+                {Object.keys(mapColorToTailwind).map((t) => (
                   <SelectItem key={t} value={t} className="text-white hover:bg-gray-700">
                     {t}
                   </SelectItem>
@@ -140,7 +149,7 @@ const NoteCard = ({ id, title, content, color, tag, created_at, onTagClick }) =>
             <div className="flex items-center space-x-2">
               <span>Selected Color:</span>
               <div
-                className={`w-6 h-6 rounded-full bg-${editedColor}-500`}
+                className={`w-6 h-6 rounded-full ${mapColorToTailwind(editedColor)}`}
               ></div>
             </div>
             <DialogFooter>
