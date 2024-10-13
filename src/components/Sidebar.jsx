@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CircleUserRound, ChevronLeft, ChevronRight, Check, X, Plus } from 'lucide-react';
 import { useSupabaseAuth, useNotes } from '../integrations/supabase';
+import { useTags } from '../integrations/supabase/hooks/useTags';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -20,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import AddTagModal from './AddTagModal';
 
-const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNewCategory }) => {
+const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNew
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
   const { data: notes, isLoading: notesLoading } = useNotes();
+  const { data: tags, isLoading: tagsLoading } = useTags();
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,15 +56,19 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNew
     return format(new Date(dateString), 'dd MMMM yyyy HH:mm:ss');
   };
 
-  const getCategoryCount = (categoryName) => {
+  const getCategoryCount = (tagName) => {
     if (notesLoading || !notes) return 0;
-    return notes.filter(note => note.tag === categoryName).length;
+    return notes.filter(note => note.tag === tagName).length;
   };
 
   const handleAddNewTag = (newTag) => {
-    addNewCategory(newTag);
+    // This function should be implemented to add a new tag to the database
     setIsAddTagModalOpen(false);
   };
+
+  if (tagsLoading) {
+    return <div>Loading tags...</div>;
+  }
 
   return (
     <div className={`bg-gray-900 text-white p-6 flex flex-col h-screen transition-all duration-300 ease-in-out ${isCollapsed ? 'w-10 sm:w-20' : 'w-32 sm:w-64'}`}>
@@ -91,22 +97,22 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNew
         </button>
       </div>
       <nav className="flex-grow">
-        {categories.map((category) => (
+        {tags.map((tag) => (
           <div
-            key={category.name}
+            key={tag.id}
             className="flex items-center mb-2 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition-colors"
-            onClick={() => toggleFilter(category.name)}
+            onClick={() => toggleFilter(tag.tag)}
           >
-            {activeFilters.includes(category.name) ? (
-              <Check className={`w-3 h-3 ${category.color} rounded-full mr-3`} />
+            {activeFilters.includes(tag.tag) ? (
+              <Check className={`w-3 h-3 ${tag.color} rounded-full mr-3`} />
             ) : (
-              <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
+              <div className={`w-2 h-2 rounded-full ${tag.color} mr-3`}></div>
             )}
             {!isCollapsed && (
               <>
-                <span className="flex-grow">{category.name}</span>
-                <span className={`${category.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
-                  {getCategoryCount(category.name).toString()}
+                <span className="flex-grow">{tag.tag}</span>
+                <span className={`${tag.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
+                  {getCategoryCount(tag.tag).toString()}
                 </span>
               </>
             )}
