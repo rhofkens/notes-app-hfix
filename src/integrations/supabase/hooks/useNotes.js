@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabase';
-import { useSupabaseAuth } from '../auth';
 
 const fromSupabase = async (query) => {
     const { data, error } = await query;
@@ -8,29 +7,39 @@ const fromSupabase = async (query) => {
     return data;
 };
 
-export const useNote = (id) => {
-    const { session } = useSupabaseAuth();
-    return useQuery({
-        queryKey: ['notes', id],
-        queryFn: () => fromSupabase(supabase.from('notes').select('*').eq('id', id).eq('user_id', session?.user?.id).single()),
-        enabled: !!session?.user?.id,
-    });
-};
+/*
+### notes
 
-export const useNotes = () => {
-    const { session } = useSupabaseAuth();
-    return useQuery({
-        queryKey: ['notes'],
-        queryFn: () => fromSupabase(supabase.from('notes').select('*').eq('user_id', session?.user?.id)),
-        enabled: !!session?.user?.id,
-    });
-};
+| name       | type                     | format | required |
+|------------|--------------------------|--------|----------|
+| id         | integer                  | bigint | true     |
+| created_at | timestamp with time zone | string | true     |
+| title      | text                     | string | false    |
+| content    | text                     | string | false    |
+| color      | text                     | string | false    |
+| tag        | text                     | string | false    |
+
+Note: 
+- 'id' is the Primary Key.
+- 'created_at' has a default value of now().
+- 'color' has a default value of 'pink'.
+- 'tag' has a default value of 'Work'.
+*/
+
+export const useNote = (id) => useQuery({
+    queryKey: ['notes', id],
+    queryFn: () => fromSupabase(supabase.from('notes').select('*').eq('id', id).single()),
+});
+
+export const useNotes = () => useQuery({
+    queryKey: ['notes'],
+    queryFn: () => fromSupabase(supabase.from('notes').select('*')),
+});
 
 export const useAddNote = () => {
     const queryClient = useQueryClient();
-    const { session } = useSupabaseAuth();
     return useMutation({
-        mutationFn: (newNote) => fromSupabase(supabase.from('notes').insert([{ ...newNote, user_id: session?.user?.id }])),
+        mutationFn: (newNote) => fromSupabase(supabase.from('notes').insert([newNote])),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notes'] });
         },
@@ -39,9 +48,8 @@ export const useAddNote = () => {
 
 export const useUpdateNote = () => {
     const queryClient = useQueryClient();
-    const { session } = useSupabaseAuth();
     return useMutation({
-        mutationFn: ({ id, ...updateData }) => fromSupabase(supabase.from('notes').update(updateData).eq('id', id).eq('user_id', session?.user?.id)),
+        mutationFn: ({ id, ...updateData }) => fromSupabase(supabase.from('notes').update(updateData).eq('id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notes'] });
         },
@@ -50,9 +58,8 @@ export const useUpdateNote = () => {
 
 export const useDeleteNote = () => {
     const queryClient = useQueryClient();
-    const { session } = useSupabaseAuth();
     return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('notes').delete().eq('id', id).eq('user_id', session?.user?.id)),
+        mutationFn: (id) => fromSupabase(supabase.from('notes').delete().eq('id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notes'] });
         },
