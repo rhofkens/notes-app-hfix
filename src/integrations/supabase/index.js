@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import { SupabaseAuthProvider, useSupabaseAuth, SupabaseAuthUI } from './auth';
-import { useNote, useNotes, useAddNote, useUpdateNote, useDeleteNote, useTags } from './hooks/useNotes';
+import { useNote, useNotes, useAddNote, useUpdateNote, useDeleteNote } from './hooks/useNotes';
 
 export {
   supabase,
@@ -11,6 +11,5 @@ export {
   useNotes,
   useAddNote,
   useUpdateNote,
-  useDeleteNote,
-  useTags
+  useDeleteNote
 };

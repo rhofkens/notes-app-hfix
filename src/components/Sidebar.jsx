@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CircleUserRound, ChevronLeft, ChevronRight, Check, X, Plus } from 'lucide-react';
-import { useSupabaseAuth, useNotes, useTags } from '../integrations/supabase';
+import { useSupabaseAuth, useNotes } from '../integrations/supabase';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import AddTagModal from './AddTagModal';
 
-const Sidebar = ({ activeFilters, toggleFilter, clearFilters, addNewCategory }) => {
+const Sidebar = ({ activeFilters, toggleFilter, clearFilters, categories, addNewCategory }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
   const navigate = useNavigate();
@@ -28,7 +28,6 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, addNewCategory }) 
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
   const { data: notes, isLoading: notesLoading } = useNotes();
-  const { data: tags, isLoading: tagsLoading } = useTags();
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,31 +91,27 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters, addNewCategory }) 
         </button>
       </div>
       <nav className="flex-grow">
-        {tagsLoading ? (
-          <div>Loading tags...</div>
-        ) : (
-          tags?.map((tag) => (
-            <div
-              key={tag.tag}
-              className="flex items-center mb-2 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition-colors"
-              onClick={() => toggleFilter(tag.tag)}
-            >
-              {activeFilters.includes(tag.tag) ? (
-                <Check className={`w-3 h-3 ${tag.color} rounded-full mr-3`} />
-              ) : (
-                <div className={`w-2 h-2 rounded-full ${tag.color} mr-3`}></div>
-              )}
-              {!isCollapsed && (
-                <>
-                  <span className="flex-grow">{tag.tag}</span>
-                  <span className={`${tag.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
-                    {getCategoryCount(tag.tag).toString()}
-                  </span>
-                </>
-              )}
-            </div>
-          ))
-        )}
+        {categories.map((category) => (
+          <div
+            key={category.name}
+            className="flex items-center mb-2 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition-colors"
+            onClick={() => toggleFilter(category.name)}
+          >
+            {activeFilters.includes(category.name) ? (
+              <Check className={`w-3 h-3 ${category.color} rounded-full mr-3`} />
+            ) : (
+              <div className={`w-2 h-2 rounded-full ${category.color} mr-3`}></div>
+            )}
+            {!isCollapsed && (
+              <>
+                <span className="flex-grow">{category.name}</span>
+                <span className={`${category.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
+                  {getCategoryCount(category.name).toString()}
+                </span>
+              </>
+            )}
+          </div>
+        ))}
         {!isCollapsed && (
           <Button
             variant="ghost"
