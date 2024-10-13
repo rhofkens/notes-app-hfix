@@ -21,6 +21,23 @@ import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import AddTagModal from './AddTagModal';
 
+const mapColorToTailwind = (color) => {
+  const colorMap = {
+    'blue': 'bg-blue-600',
+    'red': 'bg-red-500',
+    'green': 'bg-green-500',
+    'yellow': 'bg-yellow-500',
+    'purple': 'bg-purple-500',
+    'pink': 'bg-pink-500',
+    'indigo': 'bg-indigo-500',
+    'teal': 'bg-teal-500',
+    'orange': 'bg-orange-500',
+    'gray': 'bg-gray-500',
+    'emerald': 'bg-emerald-500',
+  };
+  return colorMap[color.toLowerCase()] || 'bg-gray-500'; // Default to gray if color not found
+};
+
 const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { session, logout } = useSupabaseAuth();
@@ -104,14 +121,14 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
             onClick={() => toggleFilter(tag.tag)}
           >
             {activeFilters.includes(tag.tag) ? (
-              <Check className={`w-3 h-3 ${tag.color} rounded-full mr-3`} />
+              <Check className={`w-3 h-3 ${mapColorToTailwind(tag.color)} rounded-full mr-3`} />
             ) : (
-              <div className={`w-2 h-2 rounded-full ${tag.color} mr-3`}></div>
+              <div className={`w-2 h-2 rounded-full ${mapColorToTailwind(tag.color)} mr-3`}></div>
             )}
             {!isCollapsed && (
               <>
                 <span className="flex-grow">{tag.tag}</span>
-                <span className={`${tag.color} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
+                <span className={`${mapColorToTailwind(tag.color)} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
                   {getCategoryCount(tag.tag).toString()}
                 </span>
               </>
