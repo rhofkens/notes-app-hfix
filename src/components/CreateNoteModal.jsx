@@ -5,24 +5,26 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddNote } from '../integrations/supabase';
+import { useTags } from '../integrations/supabase/hooks/useTags';
 import { toast } from 'sonner';
 
-const CreateNoteModal = ({ isOpen, onClose, categories = [] }) => {
+const CreateNoteModal = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tag, setTag] = useState('');
   const [color, setColor] = useState('');
 
   const addNote = useAddNote();
+  const { data: tags, isLoading: tagsLoading } = useTags();
 
   useEffect(() => {
-    if (tag) {
-      const selectedCategory = categories.find(category => category.name === tag);
-      if (selectedCategory) {
-        setColor(selectedCategory.color);
+    if (tag && tags) {
+      const selectedTag = tags.find(t => t.tag === tag);
+      if (selectedTag) {
+        setColor(selectedTag.color);
       }
     }
-  }, [tag, categories]);
+  }, [tag, tags]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,19 +77,25 @@ const CreateNoteModal = ({ isOpen, onClose, categories = [] }) => {
               <SelectValue placeholder="Select tag" />
             </SelectTrigger>
             <SelectContent className="bg-gray-800 text-white">
-              {categories.map((category) => (
-                <SelectItem key={category.name} value={category.name} className="text-white hover:bg-gray-700">
-                  {category.name}
-                </SelectItem>
-              ))}
+              {tagsLoading ? (
+                <SelectItem value="" disabled>Loading tags...</SelectItem>
+              ) : (
+                tags.map((tag) => (
+                  <SelectItem key={tag.id} value={tag.tag} className="text-white hover:bg-gray-700">
+                    {tag.tag}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
-          <div className="flex items-center space-x-2">
-            <span>Selected Color:</span>
-            <div
-              className={`w-6 h-6 rounded-full ${color}`}
-            ></div>
-          </div>
+          {color && (
+            <div className="flex items-center space-x-2">
+              <span>Selected Color:</span>
+              <div
+                className={`w-6 h-6 rounded-full bg-${color}-500`}
+              ></div>
+            </div>
+          )}
           <DialogFooter>
             <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
               Create Note
