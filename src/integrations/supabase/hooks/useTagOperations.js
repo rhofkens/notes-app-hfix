@@ -34,13 +34,13 @@ export const useCountNotesByTag = (tagId) => {
     queryKey: ['noteCount', tagId],
     queryFn: async () => {
       if (!tagId) return 0;
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('notes')
-        .select('id', { count: 'exact' })
+        .select('*', { count: 'exact' })
         .eq('tag', tagId);
 
       if (error) throw error;
-      return data.length;
+      return count;
     },
     enabled: !!tagId,
   });
