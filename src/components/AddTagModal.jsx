@@ -2,33 +2,41 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAddTag } from '../integrations/supabase/hooks/useTags';
+import { toast } from 'sonner';
 
 const colorOptions = [
-  { name: 'Purple', value: 'bg-purple-500' },
-  { name: 'Yellow', value: 'bg-yellow-500' },
-  { name: 'Blue', value: 'bg-blue-600' },
-  { name: 'Teal', value: 'bg-teal-500' },
-  { name: 'Pink', value: 'bg-pink-500' },
-  { name: 'Orange', value: 'bg-orange-500' },
-  // New colors
-  { name: 'Red', value: 'bg-red-500' },
-  { name: 'Green', value: 'bg-green-500' },
-  { name: 'Indigo', value: 'bg-indigo-500' },
-  { name: 'Cyan', value: 'bg-cyan-500' },
-  { name: 'Lime', value: 'bg-lime-500' },
-  { name: 'Fuchsia', value: 'bg-fuchsia-500' },
+  { name: 'Purple', value: 'purple' },
+  { name: 'Yellow', value: 'yellow' },
+  { name: 'Blue', value: 'blue' },
+  { name: 'Teal', value: 'teal' },
+  { name: 'Pink', value: 'pink' },
+  { name: 'Orange', value: 'orange' },
+  { name: 'Red', value: 'red' },
+  { name: 'Green', value: 'green' },
+  { name: 'Indigo', value: 'indigo' },
+  { name: 'Cyan', value: 'cyan' },
+  { name: 'Lime', value: 'lime' },
+  { name: 'Fuchsia', value: 'fuchsia' },
 ];
 
-const AddTagModal = ({ isOpen, onClose, onAddTag }) => {
+const AddTagModal = ({ isOpen, onClose }) => {
   const [tagName, setTagName] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const addTag = useAddTag();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (tagName && selectedColor) {
-      onAddTag({ name: tagName, color: selectedColor });
-      setTagName('');
-      setSelectedColor('');
+      try {
+        await addTag.mutateAsync({ tag: tagName, color: selectedColor });
+        toast.success('Tag added successfully');
+        setTagName('');
+        setSelectedColor('');
+        onClose();
+      } catch (error) {
+        toast.error('Failed to add tag');
+      }
     }
   };
 
@@ -50,7 +58,7 @@ const AddTagModal = ({ isOpen, onClose, onAddTag }) => {
               <button
                 key={color.value}
                 type="button"
-                className={`w-full h-8 rounded-md ${color.value} ${
+                className={`w-full h-8 rounded-md bg-${color.value}-500 ${
                   selectedColor === color.value ? 'ring-2 ring-white' : ''
                 }`}
                 onClick={() => setSelectedColor(color.value)}
