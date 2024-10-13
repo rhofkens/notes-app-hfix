@@ -56,3 +56,5 @@ Failed to parse source for import analysis because the content contains invalid 
 ```
 
 3. can you bundle all of my prompts in a text file called prompts.txt and add it to the repo?
+
+4. This file only contains some output of the last prompts.  I would like to include all of my prompts from the beginning of this project.  I don't want to include your answers.
