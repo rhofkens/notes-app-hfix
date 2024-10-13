@@ -20,23 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import AddTagModal from './AddTagModal';
-
-const mapColorToTailwind = (color) => {
-  const colorMap = {
-    'blue': 'bg-blue-600',
-    'red': 'bg-red-500',
-    'green': 'bg-green-500',
-    'yellow': 'bg-yellow-500',
-    'purple': 'bg-purple-500',
-    'pink': 'bg-pink-500',
-    'indigo': 'bg-indigo-500',
-    'teal': 'bg-teal-500',
-    'orange': 'bg-orange-500',
-    'gray': 'bg-gray-500',
-    'emerald': 'bg-emerald-500',
-  };
-  return colorMap[color.toLowerCase()] || 'bg-gray-500'; // Default to gray if color not found
-};
+import TagItem from './TagItem';
 
 const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -78,11 +62,6 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
     return notes.filter(note => note.tag === tagName).length;
   };
 
-  const handleAddNewTag = (newTag) => {
-    // This function should be implemented to add a new tag to the database
-    setIsAddTagModalOpen(false);
-  };
-
   if (tagsLoading) {
     return <div>Loading tags...</div>;
   }
@@ -115,25 +94,14 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
       </div>
       <nav className="flex-grow">
         {tags.map((tag) => (
-          <div
+          <TagItem
             key={tag.id}
-            className="flex items-center mb-2 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition-colors"
-            onClick={() => toggleFilter(tag.tag)}
-          >
-            {activeFilters.includes(tag.tag) ? (
-              <Check className={`w-3 h-3 ${mapColorToTailwind(tag.color)} rounded-full mr-3`} />
-            ) : (
-              <div className={`w-2 h-2 rounded-full ${mapColorToTailwind(tag.color)} mr-3`}></div>
-            )}
-            {!isCollapsed && (
-              <>
-                <span className="flex-grow">{tag.tag}</span>
-                <span className={`${mapColorToTailwind(tag.color)} text-xs px-2 py-1 rounded-full min-w-[24px] flex items-center justify-center`}>
-                  {getCategoryCount(tag.tag).toString()}
-                </span>
-              </>
-            )}
-          </div>
+            tag={tag}
+            isActive={activeFilters.includes(tag.tag)}
+            count={getCategoryCount(tag.tag)}
+            onClick={toggleFilter}
+            isCollapsed={isCollapsed}
+          />
         ))}
         {!isCollapsed && (
           <Button
@@ -199,7 +167,6 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
       <AddTagModal
         isOpen={isAddTagModalOpen}
         onClose={() => setIsAddTagModalOpen(false)}
-        onAddTag={handleAddNewTag}
       />
     </div>
   );
