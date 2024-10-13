@@ -11,13 +11,7 @@ const DeleteTagModal = ({ isOpen, onClose }) => {
   const [selectedTag, setSelectedTag] = useState(null);
   const { data: tags, isLoading: tagsLoading } = useTags();
   const { mutate: deleteTag } = useDeleteTag();
-  const { data: noteCount, refetch: refetchNoteCount } = useCountNotesByTag(selectedTag);
-
-  useEffect(() => {
-    if (selectedTag) {
-      refetchNoteCount();
-    }
-  }, [selectedTag, refetchNoteCount]);
+  const { data: noteCount, isLoading: countLoading } = useCountNotesByTag(selectedTag);
 
   const handleDelete = async () => {
     if (!selectedTag) {
@@ -54,9 +48,11 @@ const DeleteTagModal = ({ isOpen, onClose }) => {
             </RadioGroup>
           )}
         </div>
-        {selectedTag && noteCount !== undefined && (
+        {selectedTag && (
           <p className="text-yellow-500">
-            Deleting this tag will delete {noteCount} notes using this tag.
+            {countLoading
+              ? 'Calculating affected notes...'
+              : `Deleting this tag will delete ${noteCount} note${noteCount !== 1 ? 's' : ''} using this tag.`}
           </p>
         )}
         <DialogFooter>
