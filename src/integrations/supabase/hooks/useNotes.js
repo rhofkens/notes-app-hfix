@@ -7,25 +7,6 @@ const fromSupabase = async (query) => {
     return data;
 };
 
-/*
-### notes
-
-| name       | type                     | format | required |
-|------------|--------------------------|--------|----------|
-| id         | integer                  | bigint | true     |
-| created_at | timestamp with time zone | string | true     |
-| title      | text                     | string | false    |
-| content    | text                     | string | false    |
-| color      | text                     | string | false    |
-| tag        | text                     | string | false    |
-
-Note: 
-- 'id' is the Primary Key.
-- 'created_at' has a default value of now().
-- 'color' has a default value of 'pink'.
-- 'tag' has a default value of 'Work'.
-*/
-
 export const useNote = (id) => useQuery({
     queryKey: ['notes', id],
     queryFn: () => fromSupabase(supabase.from('notes').select('*').eq('id', id).single()),
@@ -65,3 +46,8 @@ export const useDeleteNote = () => {
         },
     });
 };
+
+export const useTags = () => useQuery({
+    queryKey: ['tags'],
+    queryFn: () => fromSupabase(supabase.from('tags').select('*')),
+});
