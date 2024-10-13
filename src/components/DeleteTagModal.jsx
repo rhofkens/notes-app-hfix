@@ -11,7 +11,7 @@ const DeleteTagModal = ({ isOpen, onClose }) => {
   const [selectedTag, setSelectedTag] = useState(null);
   const { data: tags, isLoading: tagsLoading } = useTags();
   const { mutate: deleteTag } = useDeleteTag();
-  const { data: noteCount, isLoading: countLoading } = useCountNotesByTag(selectedTag);
+  const { data: noteCount, isLoading: countLoading } = useCountNotesByTag(selectedTag?.tag);
 
   const handleDelete = async () => {
     if (!selectedTag) {
@@ -20,7 +20,7 @@ const DeleteTagModal = ({ isOpen, onClose }) => {
     }
 
     try {
-      await deleteTag(selectedTag);
+      await deleteTag(selectedTag.id);
       toast.success('Tag and associated notes deleted successfully');
       onClose();
     } catch (error) {
@@ -41,7 +41,7 @@ const DeleteTagModal = ({ isOpen, onClose }) => {
             <RadioGroup onValueChange={setSelectedTag} value={selectedTag}>
               {tags.map((tag) => (
                 <div key={tag.id} className="flex items-center space-x-2">
-                  <RadioGroupItem value={tag.id} id={tag.id} />
+                  <RadioGroupItem value={tag} id={tag.id} />
                   <Label htmlFor={tag.id}>{tag.tag}</Label>
                 </div>
               ))}
