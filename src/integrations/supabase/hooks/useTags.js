@@ -4,7 +4,7 @@ import { supabase } from '../supabase';
 const fetchTags = async () => {
   const { data, error } = await supabase
     .from('tags')
-    .select('*')
+    .select('id, tag, color')
     .order('tag', { ascending: true });
   
   if (error) throw error;

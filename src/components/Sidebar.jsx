@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CircleUserRound, ChevronLeft, ChevronRight, Check, X, Plus } from 'lucide-react';
+import { CircleUserRound, ChevronLeft, ChevronRight, Check, X, Plus, Trash2 } from 'lucide-react';
 import { useSupabaseAuth, useNotes } from '../integrations/supabase';
 import { useTags } from '../integrations/supabase/hooks/useTags';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import AddTagModal from './AddTagModal';
+import DeleteTagModal from './DeleteTagModal';
 import TagItem from './TagItem';
 
 const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
@@ -29,6 +30,7 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
+  const [isDeleteTagModalOpen, setIsDeleteTagModalOpen] = useState(false);
   const { data: notes, isLoading: notesLoading } = useNotes();
   const { data: tags, isLoading: tagsLoading } = useTags();
 
@@ -104,14 +106,24 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
           />
         ))}
         {!isCollapsed && (
-          <Button
-            variant="ghost"
-            className="w-full mt-2 flex items-center justify-center text-sm"
-            onClick={() => setIsAddTagModalOpen(true)}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add New Tag
-          </Button>
+          <>
+            <Button
+              variant="ghost"
+              className="w-full mt-2 flex items-center justify-center text-sm"
+              onClick={() => setIsAddTagModalOpen(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add New Tag
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full mt-2 flex items-center justify-center text-sm"
+              onClick={() => setIsDeleteTagModalOpen(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Tag
+            </Button>
+          </>
         )}
       </nav>
 
@@ -167,6 +179,10 @@ const Sidebar = ({ activeFilters, toggleFilter, clearFilters }) => {
       <AddTagModal
         isOpen={isAddTagModalOpen}
         onClose={() => setIsAddTagModalOpen(false)}
+      />
+      <DeleteTagModal
+        isOpen={isDeleteTagModalOpen}
+        onClose={() => setIsDeleteTagModalOpen(false)}
       />
     </div>
   );
